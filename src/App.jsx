@@ -5,8 +5,8 @@ function App() {
   const [text, setText] = useState("");
   const [notes, setNotes] = useState([]);
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
-
+  // const API_BASE = import.meta.env.VITE_API_BASE_URL;
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://notepad-api-exbnfyefcse7e6g5.malaysiawest-01.azurewebsites.net";
   const fetchNotes = async () => {
     const res = await axios.get(`${API_BASE}/api/notes`);
     setNotes(res.data);

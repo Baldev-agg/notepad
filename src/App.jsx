@@ -6,14 +6,15 @@ function App() {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://notepad-api-exbnfyefcse7e6g5.malaysiawest-01.azurewebsites.net";
+  // Local testing ke liye localhost aur prod ke liye Azure link
+  const API_BASE = "https://notepad-api-exbnfyefcse7e6g5.malaysiawest-01.azurewebsites.net";
 
   const fetchNotes = async () => {
     try {
       const res = await axios.get(`${API_BASE}/api/notes`);
       setNotes(res.data);
     } catch (err) {
-      console.error("Error fetching notes:", err);
+      console.error("Fetch error:", err);
     }
   };
 
@@ -25,9 +26,22 @@ function App() {
       setText("");
       fetchNotes();
     } catch (err) {
-      alert("Failed to save note");
+      alert("Save failed!");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // 🔥 Professional Delete Logic
+  const deleteNote = async (id) => {
+    if (window.confirm("Bhai, pakka delete karna hai?")) {
+      try {
+        await axios.delete(`${API_BASE}/api/notes/${id}`);
+        setNotes(notes.filter(n => n.id !== id)); // Local state update (Fast UI)
+      } catch (err) {
+        console.error("Delete error details:", err.response);
+        alert("Delete failed! Check if backend has Delete method.");
+      }
     }
   };
 
@@ -36,39 +50,37 @@ function App() {
   }, []);
 
   return (
-    <div style={{ backgroundColor: "#f3f4f6", minHeight: "100vh", padding: "40px 20px", fontFamily: "sans-serif" }}>
-      <div style={{ maxWidth: "600px", margin: "0 auto", backgroundColor: "#fff", borderRadius: "12px", boxShadow: "0 4px 6px rgba(0,0,0,0.1)", padding: "30px" }}>
+    <div style={{ backgroundColor: "#f3f4f6", minHeight: "100vh", padding: "40px" }}>
+      <div style={{ maxWidth: "500px", margin: "0 auto", backgroundColor: "#fff", padding: "25px", borderRadius: "12px", boxShadow: "0 4px 10px rgba(0,0,0,0.1)" }}>
+        <h2 style={{ textAlign: "center", color: "#333" }}>📝 Notepad Pro</h2>
         
-        <h2 style={{ color: "#1f2937", marginBottom: "20px", textAlign: "center", fontSize: "24px" }}>📝 Professional Notepad</h2>
+        <textarea 
+          placeholder="Apna note likho..."
+          value={text} 
+          onChange={(e) => setText(e.target.value)} 
+          style={{ width: "100%", height: "80px", marginBottom: "10px", padding: "10px", borderRadius: "6px", border: "1px solid #ddd" }}
+        />
         
-        <div style={{ marginBottom: "20px" }}>
-          <textarea 
-            placeholder="Write your note here..."
-            value={text} 
-            onChange={(e) => setText(e.target.value)} 
-            style={{ width: "100%", height: "120px", padding: "12px", borderRadius: "8px", border: "1px solid #d1d5db", fontSize: "16px", resize: "none", boxSizing: "border-box" }}
-          />
-          <button 
-            onClick={saveNote} 
-            disabled={loading}
-            style={{ width: "100%", marginTop: "12px", padding: "12px", backgroundColor: loading ? "#9ca3af" : "#2563eb", color: "#fff", border: "none", borderRadius: "8px", fontSize: "16px", cursor: "pointer", fontWeight: "bold", transition: "0.3s" }}
-          >
-            {loading ? "Saving..." : "Save Note"}
-          </button>
-        </div>
+        <button 
+          onClick={saveNote} 
+          disabled={loading}
+          style={{ width: "100%", padding: "10px", backgroundColor: "#2563eb", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "bold" }}
+        >
+          {loading ? "Saving..." : "Save Note"}
+        </button>
 
-        <hr style={{ border: "0", borderTop: "1px solid #e5e7eb", margin: "25px 0" }} />
-
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-          {notes.length === 0 ? (
-            <p style={{ textAlign: "center", color: "#6b7280" }}>No notes found. Start writing!</p>
-          ) : (
-            notes.map((n) => (
-              <div key={n.id} style={{ padding: "15px", backgroundColor: "#f9fafb", borderLeft: "4px solid #2563eb", borderRadius: "4px", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                <p style={{ margin: "0", color: "#374151", lineHeight: "1.5" }}>{n.content}</p>
-              </div>
-            ))
-          )}
+        <div style={{ marginTop: "20px" }}>
+          {notes.map((n) => (
+            <div key={n.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px", backgroundColor: "#f9fafb", borderBottom: "1px solid #eee", marginBottom: "5px" }}>
+              <span style={{ color: "#444" }}>{n.content}</span>
+              <button 
+                onClick={() => deleteNote(n.id)} 
+                style={{ backgroundColor: "#ef4444", color: "white", border: "none", padding: "5px 10px", borderRadius: "4px", cursor: "pointer", fontSize: "12px" }}
+              >
+                Delete
+              </button>
+            </div>
+          ))}
         </div>
       </div>
     </div>

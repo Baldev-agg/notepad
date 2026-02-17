@@ -8,7 +8,7 @@ function App() {
 
   // Local testing ke liye localhost aur prod ke liye Azure link
   // const API_BASE = "https://localhost:7239";
-   const API_BASE = "notepad-api-exbnfyefcse7e6g5.malaysiawest-01.azurewebsites.net";
+   const API_BASE = "https://notepad-api-exbnfyefcse7e6g5.malaysiawest-01.azurewebsites.net";
 
   const fetchNotes = async () => {
     try {

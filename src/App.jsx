@@ -7,7 +7,8 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   // Local testing ke liye localhost aur prod ke liye Azure link
-  const API_BASE = "https://notepad-api-exbnfyefcse7e6g5.malaysiawest-01.azurewebsites.net";
+  // const API_BASE = "https://localhost:7239";
+   const API_BASE = "notepad-api-exbnfyefcse7e6g5.malaysiawest-01.azurewebsites.net";
 
   const fetchNotes = async () => {
     try {
@@ -32,9 +33,20 @@ function App() {
     }
   };
 
+  //edit note function 
+  const editNote = async (id, content)=>{
+    try{
+      await axios.put(`${API_BASE}/api/notes/${id}`, {id:id, content:content});
+      fetchNotes();
+    }catch(err){
+      console.error("Edit error details:", err.response);
+      alert("Edit failed!");
+    }
+  }
+
   // 🔥 Professional Delete Logic
   const deleteNote = async (id) => {
-    if (window.confirm("Bhai, pakka delete karna hai?")) {
+    if (window.confirm("Want to delete this Note?")) {
       try {
         await axios.delete(`${API_BASE}/api/notes/${id}`);
         setNotes(notes.filter(n => n.id !== id)); // Local state update (Fast UI)
@@ -69,16 +81,32 @@ function App() {
           {loading ? "Saving..." : "Save Note"}
         </button>
 
+        {/* Edit/Delete per note */}
+
         <div style={{ marginTop: "20px" }}>
+          {notes.length === 0 && <div style={{ color: '#666', textAlign: 'center', padding: '10px' }}>No notes yet</div>}
           {notes.map((n) => (
             <div key={n.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px", backgroundColor: "#f9fafb", borderBottom: "1px solid #eee", marginBottom: "5px" }}>
-              <span style={{ color: "#444" }}>{n.content}</span>
-              <button 
-                onClick={() => deleteNote(n.id)} 
-                style={{ backgroundColor: "#ef4444", color: "white", border: "none", padding: "5px 10px", borderRadius: "4px", cursor: "pointer", fontSize: "12px" }}
-              >
-                Delete
-              </button>
+              <span style={{ color: "#444", flex: 1, marginRight: '10px' }}>{n.content}</span>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button
+                  onClick={() => {
+                    const newContent = prompt('Edit note:', n.content || '');
+                    if (newContent !== null) {
+                      editNote(n.id, newContent);
+                    }
+                  }}
+                  style={{ backgroundColor: '#4548ed', color: 'white', border: 'none', padding: '6px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}
+                >
+                  Edit
+                </button>
+                <button 
+                  onClick={() => deleteNote(n.id)} 
+                  style={{ backgroundColor: "#ef4444", color: "white", border: "none", padding: "6px 10px", borderRadius: "4px", cursor: "pointer", fontSize: "12px" }}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           ))}
         </div>

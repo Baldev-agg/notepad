@@ -11,7 +11,7 @@ function App() {
   const [role, setRole] = useState(localStorage.getItem("userRole") || "User"); // const [email, setEmail] = useState("");
   const [userCount, setUserCount] = useState(0);
 
-  const API_BASE = "https://localhost:7239";
+  const API_BASE = "https://notepad-api-exbnfyefcse7e6g5.malaysiawest-01.azurewebsites.net";
 
   // FIX 1: Missing loginUser function jo Auth component use kar raha hai
   const loginUser = (id, userRole) => {

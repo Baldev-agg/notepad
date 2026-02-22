@@ -6,7 +6,7 @@ function Auth({ onLoginSuccess }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const API_BASE = "https://localhost:7239";
+  const API_BASE = "https://notepad-api-exbnfyefcse7e6g5.malaysiawest-01.azurewebsites.net";
 
   const handleSubmit = async (e) => {
     e.preventDefault();

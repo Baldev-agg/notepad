@@ -12,11 +12,14 @@ function Auth({ onLoginSuccess }) {
     e.preventDefault();
     const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
     try {
-      const res = await axios.post(`${API_BASE}${endpoint}`, { email, password });
-      
+      const res = await axios.post(`${API_BASE}${endpoint}`, {
+        email,
+        password,
+      });
+
       if (isLogin) {
         alert("Login Successful!");
-        onLoginSuccess(res.data.userId); // Parent (App.jsx) ko user id bhej do
+        onLoginSuccess(res.data.userId, res.data.role); // Parent (App.jsx) ko user id bhej do
       } else {
         alert("Registered! Now please Login.");
         setIsLogin(true);
@@ -27,16 +30,56 @@ function Auth({ onLoginSuccess }) {
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "50px auto", padding: "20px", border: "1px solid #ddd", borderRadius: "8px" }}>
+    <div
+      style={{
+        maxWidth: "400px",
+        margin: "50px auto",
+        padding: "20px",
+        border: "1px solid #ddd",
+        borderRadius: "8px",
+      }}
+    >
       <h3>{isLogin ? "Login" : "Register"}</h3>
       <form onSubmit={handleSubmit}>
-        <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ width: "100%", marginBottom: "10px", padding: "8px" }} />
-        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ width: "100%", marginBottom: "10px", padding: "8px" }} />
-        <button type="submit" style={{ width: "100%", padding: "10px", backgroundColor: "#2563eb", color: "white", border: "none", borderRadius: "4px" }}>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          style={{ width: "100%", marginBottom: "10px", padding: "8px" }}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          style={{ width: "100%", marginBottom: "10px", padding: "8px" }}
+        />
+        <button
+          type="submit"
+          style={{
+            width: "100%",
+            padding: "10px",
+            backgroundColor: "#2563eb",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+          }}
+        >
           {isLogin ? "Login" : "Register"}
         </button>
       </form>
-      <p onClick={() => setIsLogin(!isLogin)} style={{ cursor: "pointer", color: "blue", textAlign: "center", marginTop: "10px" }}>
+      <p
+        onClick={() => setIsLogin(!isLogin)}
+        style={{
+          cursor: "pointer",
+          color: "blue",
+          textAlign: "center",
+          marginTop: "10px",
+        }}
+      >
         {isLogin ? "New user? Register here" : "Already have an account? Login"}
       </p>
     </div>
